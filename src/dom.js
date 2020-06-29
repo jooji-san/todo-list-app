@@ -12,7 +12,12 @@ const addDiv = (function () {
   const priorityInput = addDiv.querySelector('#priority-select');
   const projectInput = addDiv.querySelector('#project-select');
 
-  (function addProjectDropdownOptions() {
+  function refreshProjectDropdownOptions() {
+    clearProjectDropdownOptions();
+    addProjectDropdownOptions();
+  }
+
+  function addProjectDropdownOptions() {
     const dropdown = document.querySelector('#project-select');
     Object.keys(projects.obj).forEach((project) => {
       const option = document.createElement('option');
@@ -20,7 +25,12 @@ const addDiv = (function () {
       option.textContent = project;
       dropdown.appendChild(option);
     });
-  })();
+  };
+
+  function clearProjectDropdownOptions() {
+    const dropdown = document.querySelector('#project-select');
+    dropdown.innerHTML = '';
+  }
 
   (function addOkBtnEventListener() {
     const okBtn = document.querySelector('.ok-btn');
@@ -64,6 +74,7 @@ const addDiv = (function () {
   function toggleAddDiv() {
     toggleHidden();
     resetAddDivInputs();
+    refreshProjectDropdownOptions();
   }
 
   return { toggleAddDiv };
@@ -71,11 +82,8 @@ const addDiv = (function () {
 
 const content = (function () {
   (function addSortInputEventListeners() {
-    const propertyInput = document.querySelector('#sort-property');
-    const directionInput = document.querySelector('#sort-direction');
-
-    propertyInput.addEventListener('input', refresh);
-    directionInput.addEventListener('input', refresh);
+    const topInputs = document.querySelectorAll('.top-input')
+    topInputs.forEach(input => input.addEventListener('input', refresh))
   })();
 
   function getSortedValues(values) {
@@ -115,27 +123,49 @@ const content = (function () {
     return valuesSorted;
   }
 
+  function moveCompletedToBottom(values) {
+    const valuesCopy = [...values];
+    return valuesCopy.sort((a, b) => a.completed - b.completed)
+  }
+
+  function hideCompleted(values) {
+    return values.filter(value => value.completed === false);
+  }
+
+  function hideOrBottom(values) {
+    const hideCompletedCheckbox = document.querySelector('.hide-completed');
+    const completedToBottomCheckbox = document.querySelector('.completed-to-bottom');
+    if (hideCompletedCheckbox.checked) {
+      return hideCompleted(values);
+    } else if (completedToBottomCheckbox.checked) {
+      return moveCompletedToBottom(values);
+    }
+
+    return values;
+  }
+
   function render() {
     save.set();
 
     let valuesModified;
     const currProjectTitle = sidebar.getCurrentProject();
-    console.log(currProjectTitle)
     if (currProjectTitle === 'view all') {
       valuesModified = getSortedValuesAll();
     } else if (currProjectTitle === 'today') {
-      console.log('hehe')
       valuesModified = projects.filterToday(getSortedValuesAll());
     } else {
       const currProjectValues = Object.values(projects.obj[currProjectTitle]);
       valuesModified = getSortedValues(currProjectValues);
     }
 
+    valuesModified = hideOrBottom(valuesModified);
+
     valuesModified.forEach((todo) => {
       renderContainer(todo.title, todo.projectTitle);
-      renderContainerContent(todo.title, todo.dueDateDate, todo.priority);
-      addContainerEventListeners();
+      renderContainerContent(todo.title, todo.dueDateDate, todo.dueDateTime, todo.priority, todo.completed);
     });
+
+    addContainerEventListeners();
   }
 
   function renderContainer(todoTitle, todoProjectTitle) {
@@ -149,21 +179,24 @@ const content = (function () {
     contentDiv.appendChild(container);
   }
 
-  function renderContainerContent(todoTitle, todoDueDateDate, todoPriority) {
+  function renderContainerContent(todoTitle, todoDueDateDate, todoDueDateTime, todoPriority, todoCompleted) {
     const container = document.querySelector(`[data-title="${todoTitle}"]`);
 
     container.classList.add(todoPriority);
 
-    insertCompleteCheckbox(container);
+    insertCompleteCheckbox(container, todoCompleted);
     insertTitle(container, todoTitle);
-    insertDueDateDate(container, todoDueDateDate);
+    insertDueDate(container, todoDueDateDate, todoDueDateTime);
     insertDeleteBtn(container);
   }
 
-  function insertCompleteCheckbox(container) {
+  function insertCompleteCheckbox(container, todoCompleted) {
     const completeCheckbox = document.createElement('input');
     completeCheckbox.type = 'checkbox';
+    completeCheckbox.checked = todoCompleted;
+    completeCheckbox.classList.add('complete-checkbox');
     completeCheckbox.addEventListener('click', handleCompleteCheckboxClick);
+    completeCheckbox.addEventListener('mouseover', (e) => e.stopPropagation());
     container.appendChild(completeCheckbox);
   }
 
@@ -175,6 +208,8 @@ const content = (function () {
 
     const container = e.target.parentElement;
     container.classList.toggle('completed');
+
+    refresh();
   }
 
   function findTodoWithEvent(e) {
@@ -190,28 +225,30 @@ const content = (function () {
     container.appendChild(title);
   }
 
-  function insertDueDateDate(container, todoDueDateDate) {
-    const dueDateDateElement = document.createElement('p');
+  function insertDueDate(container, todoDueDateDate, todoDueDateTime) {
+    const dueDateElement = document.createElement('p');
 
-    const todoDueDateDateISO = parseISO(todoDueDateDate);
-    if (isToday(todoDueDateDateISO)) {
-      let dueDateDateWithoutSuffix = formatDistanceToNowStrict(todoDueDateDateISO, { locale: ka });
-      dueDateDateWithoutSuffix = dueDateDateWithoutSuffix.slice(0, -1);
+    const todoDueDateISO = parseISO(`${todoDueDateDate} ${todoDueDateTime}`);
+    if (isToday(todoDueDateISO)) {
+      let todoDueDateFormatted = formatDistanceToNowStrict(todoDueDateISO, { locale: ka });
+      todoDueDateFormatted = todoDueDateFormatted.slice(0, -1);
 
-      todoDueDateDate = isFuture(todoDueDateDateISO)
-        ? `${dueDateDateWithoutSuffix}ში`
-        : `${dueDateDateWithoutSuffix}ის წინ`;
+      dueDateElement.textContent = isFuture(todoDueDateISO)
+        ? `${todoDueDateFormatted}ში`
+        : `${todoDueDateFormatted}ის წინ`;
+    } else {
+      dueDateElement.textContent = todoDueDateDate;
     }
 
-    dueDateDateElement.textContent = todoDueDateDate;
-
-    container.appendChild(dueDateDateElement);
+    container.appendChild(dueDateElement);
   }
 
   function insertDeleteBtn(container) {
     const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('delete-btn')
     deleteBtn.textContent = 'delete';
     deleteBtn.addEventListener('click', handleDeleteBtn);
+    deleteBtn.addEventListener('mouseover', (e) => e.stopPropagation());
     container.appendChild(deleteBtn);
   }
 
@@ -236,6 +273,8 @@ const content = (function () {
     const containers = document.querySelectorAll('.container');
     containers.forEach((container) => {
       container.addEventListener('click', handleContainerClick);
+      container.addEventListener('mouseover', (e) => e.currentTarget.classList.add('opacity-80'));
+      container.addEventListener('mouseout', (e) => e.currentTarget.classList.remove('opacity-80'));
     });
   }
 
@@ -271,6 +310,8 @@ const sidebar = (function () {
       projectLink.textContent = key;
       projectLinksDiv.appendChild(projectLink);
     });
+
+    addProjectEventListeners();
   }
 
   function addProjectEventListeners() {
@@ -308,64 +349,71 @@ const sidebar = (function () {
     projects.create(projectTitle);
     clearProjectLinks();
     render();
+    save.set();
   }
 
   function clearProjectLinks() {
-    const nav = document.querySelector('nav');
+    const projectLinksDiv = document.querySelector('.project-links');
     const projectLinks = document.querySelectorAll('.project-link');
-    projectLinks.forEach((link) => nav.removeChild(link));
+    projectLinks.forEach((link) => projectLinksDiv.removeChild(link));
   }
 
   return { render, addProjectEventListeners, getCurrentProject };
 })();
 
 const expandedView = (function () {
+  const expandedDiv = document.querySelector('.expanded');
+  const titleHeader = expandedDiv.querySelector('.todo-title');
+  const descriptionTextarea = expandedDiv.querySelector('.todo-description');
+  const dueDateDateInput = expandedDiv.querySelector('.todo-due-date-date');
+  const dueDateTimeInput = expandedDiv.querySelector('.todo-due-date-time');
+  const priorityInput = expandedDiv.querySelector('.todo-priority-select');
+  const projectInput = expandedDiv.querySelector('.todo-project-select');
+
   function toggleHidden() {
     const fullDiv = document.querySelector('.full');
     const expandedDiv = document.querySelector('.expanded');
     fullDiv.classList.toggle('hidden');
     expandedDiv.classList.toggle('hidden');
+    content.refresh();
   }
+
+  let currProjectTitle;
 
   function render(todo) {
     toggleHidden();
 
-    const expandedDiv = document.querySelector('.expanded');
-
-    const titleHeader = expandedDiv.querySelector('.todo-title');
-    const descriptionTextarea = expandedDiv.querySelector('.todo-description');
-    const dueDateDateHeader = expandedDiv.querySelector('.todo-due-date-date');
-    const dueDateTimeHeader = expandedDiv.querySelector('.todo-due-date-time');
-    const priorityHeader = expandedDiv.querySelector('.todo-priority');
-    const projectHeader = expandedDiv.querySelector('.todo-project');
-
     titleHeader.textContent = todo.title;
     descriptionTextarea.value = todo.description;
-    dueDateDateHeader.value = todo.dueDateDate;
-    dueDateTimeHeader.value = todo.dueDateTime;
-    priorityHeader.textContent = `Priority: ${todo.priority.split('-')[1]}`;
-    projectHeader.textContent = `Project: ${todo.projectTitle}`;
+    dueDateDateInput.value = todo.dueDateDate;
+    dueDateTimeInput.value = todo.dueDateTime;
+    priorityInput.value = todo.priority;
+
+    refreshProjectDropdownOptions();
+    currProjectTitle = todo.projectTitle;
+    projectInput.value = currProjectTitle;
   }
 
-  (function listenForTextareaValueChange() {
-    const textarea = document.querySelector('textarea');
-    textarea.addEventListener('input', handleTextareaChange);
+  (function addInputEventListeners() {
+    const expandedDiv = document.querySelector('.expanded');
+    const inputs = expandedDiv.querySelectorAll('.input');
+    inputs.forEach(input => input.addEventListener('input', handleInputChange));
   })();
 
-  function handleTextareaChange(e) {
+  function handleInputChange(e) {
+    const todoTitle = titleHeader.textContent;
+    const input = e.currentTarget;
+    const property = input.dataset.property;
+    const todo = projects.obj[currProjectTitle][todoTitle];
+    todo[property] = input.value;
+
+    if (e.currentTarget.dataset.property === 'projectTitle') {
+      todo.moveTodo();
+      delete projects.obj[currProjectTitle][todoTitle];
+      currProjectTitle = input.value;
+    }
+
     save.set();
-
-    const parentElement = e.target.parentElement;
-    const todoTitleHeader = parentElement.querySelector('.todo-title');
-    const projectHeader = parentElement.querySelector('.todo-project');
-    const textarea = parentElement.querySelector('textarea');
-
-    const todoTitle = todoTitleHeader.textContent;
-    let project = projectHeader.textContent;
-    project = project.split(' ').slice(1).join(' ');
-    const todo = projects.obj[project][todoTitle];
-
-    todo.description = textarea.value;
   }
 
   (function AddExitBtnEventListener() {
@@ -373,10 +421,29 @@ const expandedView = (function () {
     exitBtn.addEventListener('click', toggleHidden);
   })();
 
+  function refreshProjectDropdownOptions() {
+    clearProjectDropdownOptions();
+    addProjectDropdownOptions();
+  }
+
+  function addProjectDropdownOptions() {
+    const dropdown = document.querySelector('.todo-project-select');
+    Object.keys(projects.obj).forEach((project) => {
+      const option = document.createElement('option');
+      option.value = project;
+      option.textContent = project;
+      dropdown.appendChild(option);
+    });
+  }
+
+  function clearProjectDropdownOptions() {
+    const dropdown = document.querySelector('.todo-project-select');
+    dropdown.innerHTML = '';
+  }
+
   return { render };
 })();
 
 sidebar.render();
-sidebar.addProjectEventListeners();
 
 content.render('view all');

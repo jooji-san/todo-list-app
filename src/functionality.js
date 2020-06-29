@@ -38,9 +38,9 @@ const projects = (function () {
     }
 
     function sortByDueDateDesc(arr) {
-      arr.sort((a, b) =>
-        compareDesc(parseISO(`${a.dueDateDate} ${a.dueDateTime}`), parseISO(`${b.dueDateDate} ${b.dueDateTime}`)),
-      );
+      arr.sort((a, b) => {
+        compareDesc(parseISO(`${a.dueDateDate} ${a.dueDateTime}`), parseISO(`${b.dueDateDate} ${b.dueDateTime}`));
+      });
       return arr;
     }
 
@@ -121,17 +121,15 @@ const save = (function () {
 })();
 
 projects.create('inbox');
-projects.create('kako bako');
+projects.create('სწავლა');
 
-todos.create('do stuff', 'gay gayhey hey', '2020-06-24', '16:00', 'priority-high', 'inbox');
-todos.create('not f up', 'hey hey', '2020-06-11', '05:00', 'priority-middle', 'inbox');
-todos.create('have klajfssssssssssssssss', 'huhu', '2021-01-01', '21:00', 'priority-low', 'inbox');
-todos.create('santa', 'hehehe', '2021-01-01', '20:00', 'priority-high', 'inbox');
-todos.create('kako boy', 'hey hey', '2012-02-05', '15:00', 'priority-middle', 'kako bako');
-todos.create('kako girl', 'hey hey', '2012-02-05', '11:00', 'priority-middle', 'kako bako');
+todos.create('გარეცხე თეფშები', 'მარტო თეფშები არა. ტაფაც დევს იქ და კიდევ ბევრი ჩანგალი', '2020-06-29', '16:00', 'priority-high', 'inbox');
+todos.create('გაფერთხე საბანი', '', '2020-06-29', '23:00', 'priority-middle', 'inbox');
+todos.create('ითამაშე ქვიშაში', 'მეგობრებთან ერთად', '2021-01-01', '21:00', 'priority-low', 'inbox');
+todos.create('დაიზეპირე ფიზიკის ფორმულები', 'hehehe', '2021-01-01', '20:00', 'priority-high', 'სწავლა');
+todos.create('აკენწლე ბურთი ასჯერ', 'hey hey', '2012-02-05', '15:00', 'priority-middle', 'სწავლა');
+todos.create('გააკეთე პრეზენტაცია გერმანულში ბითიესზე', 'hey hey', '2012-02-05', '11:00', 'priority-middle', 'სწავლა');
 
-save.init();
+// save.init();
 
 console.log(projects.obj);
-
-console.log(projects.sort.sortByDueDateAsc(Object.values(projects.obj['inbox'])));

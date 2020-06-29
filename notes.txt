@@ -9,14 +9,13 @@ Completed:
 * add hour input
 * sort by properties
 * view todos for today
-
-Do:
+* dim on hover
 * add ability to change properties in expanded view
 * save projects.obj [now on the change of the properties in expanded div]
-* dim on hover
-* add icons
-* move completed tasks to bottom
+* move completed tasks to bottom (IMO first sort them by property and sort the completed tasks to the bottom)
 * hide completed tasks - checkbox on the top
+
+Do:
 * remember scroll position when opening extended and return to that point after closing instead
 * mobile version with the button on the top to open the sidebar in the full view
-* set margin on the checkbox so that the bordering area isn't gonna open expand view
+*- set margin on the checkbox so that the bordering area isn't gonna open expand view (actually you should wrap the checkbox in another div)
