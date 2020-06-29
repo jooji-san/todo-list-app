@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>ToDo</title>
+</head>
+
+<body>
+  <div class='full'>
+    <nav class='sidebar'>
+      <button class='add-btn'>add todo</button>
+      <div class='project-links'>
+        <a class='all'>view all</a>
+        <a class='today'>today</a>
+      </div>
+      <button class='add-project-btn'>add project</button>
+    </nav>
+
+    <div class='main'>
+      <div class="add-div hidden">
+
+        <input type="text" name="title" id="title" maxlength='90' placeholder='enter the todo here' value=""
+          autocomplete='off' tabindex="1">
+        <input type="date" name="due-date-date" id="due-date-date" value="" tabindex="2">
+        <input type="time" name="due-date-time" id="due-date-time" value="" tabindex="3">
+        <select name="priority" id="priority-select" tabindex="4">
+          <option value="priority-none">priority</option>
+          <option value="priority-high">high</option>
+          <option value="priority-middle">middle</option>
+          <option value="priority-low">low</option>
+        </select>
+        <select name="project" id="project-select" tabindex="5">
+        </select>
+
+        <div class='submit'>
+          <button class='ok-btn' tabindex="6">ok</button>
+          <button class='cancel-btn' tabindex="7">cancel</button>
+        </div>
+      </div>
+      <div class='sort-inputs-div'>
+        <select name="sort-property" id="sort-property" tabindex="1">
+          <option value="due date">due date</option>
+          <option value="title">title</option>
+          <option value="creation date">creation date</option>
+        </select>
+        <select name="sort-direction" id="sort-direction" tabindex="2">
+          <option value="asc">ascending</option>
+          <option value="desc">descending</option>
+        </select>
+      </div>
+      <div class='content'>
+      </div>
+    </div>
+  </div>
+
+  <div class='expanded hidden'>
+    <a class='exit-btn'>exit</a>
+    <h2 class='todo-title'></h2>
+    <textarea class='todo-description'></textarea>
+    <label for="">due date:</label>
+    <input type="date" name="todo-due-date-date" class="todo-due-date-date" value="" tabindex="2">
+    <input type="time" name="todo-due-date-time" class="todo-due-date-time" value="" tabindex="3">
+    <h5 class="todo-priority"></h5>
+    <h5 class="todo-project"></h5>
+  </div>
+
+  <script src='main.js'></script>
+</body>
+
+</html>
