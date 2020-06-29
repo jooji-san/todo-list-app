@@ -1,0 +1,22 @@
+Completed:
+* code for cancel button on the add-div
+* display view all as default on the startup
+* display the time till the todo is due, instead of the full date { if difference in days is smaller than 2 }
+* text input should take up the whole line in add-div
+* add new project button
+* set today's date as the default value for the input
+* add description section in expanded view
+* add hour input
+* sort by properties
+* view todos for today
+
+Do:
+* add ability to change properties in expanded view
+* save projects.obj [now on the change of the properties in expanded div]
+* dim on hover
+* add icons
+* move completed tasks to bottom
+* hide completed tasks - checkbox on the top
+* remember scroll position when opening extended and return to that point after closing instead
+* mobile version with the button on the top to open the sidebar in the full view
+* set margin on the checkbox so that the bordering area isn't gonna open expand view

@@ -1,0 +1,68 @@
+* {
+  border: 1px black solid;
+}
+
+:root {
+  --importance-high: rgb(221, 35, 35);
+  --importance-middle: rgb(235, 235, 36);
+  --importance-low: rgb(60, 60, 255);
+}
+
+.full {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  min-width: 250px;
+}
+
+.project-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex-grow: 1;
+}
+
+.priority-high {
+  background-color: var(--importance-high);
+}
+
+.priority-middle {
+  background-color: var(--importance-middle);
+}
+
+.priority-low {
+  background-color: var(--importance-low);
+}
+
+.hidden {
+  display: none;
+}
+
+.completed {
+  opacity: 0.5;
+}
+
+.todo-title {
+  width: 40ch;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#title {
+  display: block;
+  width: 90%;
+}
+
+.add-div input,
+.add-div button,
+.add-div select {
+  margin: 7px;
+}
+
