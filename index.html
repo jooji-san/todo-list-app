@@ -16,7 +16,7 @@
         <a class='all'>view all</a>
         <a class='today'>today</a>
       </div>
-      <button class='add-project-btn'>add project</button>
+      <button class='add-project-btn'>add project</i></button>
     </nav>
 
     <div class='main'>
@@ -40,31 +40,53 @@
           <button class='cancel-btn' tabindex="7">cancel</button>
         </div>
       </div>
-      <div class='sort-inputs-div'>
-        <select name="sort-property" id="sort-property" tabindex="1">
+
+      <div class='top-inputs-div'>
+        <select name="sort-property" id="sort-property" class='top-input' tabindex="1">
           <option value="due date">due date</option>
           <option value="title">title</option>
           <option value="creation date">creation date</option>
         </select>
-        <select name="sort-direction" id="sort-direction" tabindex="2">
+        <select name="sort-direction" id="sort-direction" class='top-input' tabindex="2">
           <option value="asc">ascending</option>
           <option value="desc">descending</option>
         </select>
+        <input type="checkbox" class='top-input completed-to-bottom' tabindex='3'>
+        <label>move completed to bottom</label>
+        <input type="checkbox" class='top-input hide-completed' tabindex='4'>
+        <label>hide completed</label>
       </div>
+
       <div class='content'>
       </div>
     </div>
   </div>
 
   <div class='expanded hidden'>
-    <a class='exit-btn'>exit</a>
+    <button class='exit-btn'>exit</button>
     <h2 class='todo-title'></h2>
-    <textarea class='todo-description'></textarea>
-    <label for="">due date:</label>
-    <input type="date" name="todo-due-date-date" class="todo-due-date-date" value="" tabindex="2">
-    <input type="time" name="todo-due-date-time" class="todo-due-date-time" value="" tabindex="3">
-    <h5 class="todo-priority"></h5>
-    <h5 class="todo-project"></h5>
+    <textarea class='todo-description input' data-property='description'></textarea>
+    <div>
+      <label for="">Due date:</label>
+      <input type="date" name="todo-due-date-date" class="todo-due-date-date input" data-property='dueDateDate' value=""
+        tabindex="2">
+      <input type="time" name="todo-due-date-time" class="todo-due-date-time input" data-property='dueDateTime' value=""
+        tabindex="3">
+    </div>
+    <div>
+      <label for="todo-priority">Priority:</label>
+      <select name="todo-priority" class="todo-priority-select input" data-property='priority' tabindex="4">
+        <option value="priority-none">priority</option>
+        <option value="priority-high">high</option>
+        <option value="priority-middle">middle</option>
+        <option value="priority-low">low</option>
+      </select>
+    </div>
+    <div>
+      <label for="todo-project">Project:</label>
+      <select name="todo-project" class="todo-project-select input" data-property='projectTitle' tabindex="5">
+      </select>
+    </div>
   </div>
 
   <script src='main.js'></script>

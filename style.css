@@ -1,11 +1,11 @@
 * {
-  border: 1px black solid;
+  /* border: 1px black solid; */
 }
 
 :root {
-  --importance-high: rgb(221, 35, 35);
-  --importance-middle: rgb(235, 235, 36);
-  --importance-low: rgb(60, 60, 255);
+  --importance-high: #f44336 ;
+  --importance-middle: #ffc107;
+  --importance-low: #00bcd4;
 }
 
 .full {
@@ -13,10 +13,19 @@
   min-height: 100vh;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .sidebar {
   display: flex;
   flex-direction: column;
   min-width: 250px;
+  padding: 10px;
+}
+
+.sidebar button {
+  margin: 5px 0;
 }
 
 .project-links {
@@ -24,8 +33,49 @@
   flex-direction: column;
 }
 
+.project-links a {
+  margin: 5px 0;
+  text-align: center;
+}
+
 .main {
   flex-grow: 1;
+}
+
+.add-div {
+  border: 2px black solid;
+}
+
+.add-div input,
+.add-div button,
+.add-div select {
+  margin: 7px;
+}
+
+.top-inputs-div {
+  margin: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.top-inputs-div > * {
+  margin-right: 10px;
+}
+
+.top-inputs-div [type='checkbox'] {
+  margin: 5px;
+}
+
+.container {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 5px;
+  margin-right: 10px;
+  border-radius: 10px;
+}
+
+.container > * {
+  margin: 10px;
 }
 
 .priority-high {
@@ -38,10 +88,6 @@
 
 .priority-low {
   background-color: var(--importance-low);
-}
-
-.hidden {
-  display: none;
 }
 
 .completed {
@@ -60,9 +106,21 @@
   width: 90%;
 }
 
-.add-div input,
-.add-div button,
-.add-div select {
-  margin: 7px;
+.opacity-80 {
+  opacity: 80%;
 }
 
+.expanded {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.expanded > * {
+  margin-bottom: 20px;
+}
+
+.todo-title {
+  margin: 0 0 20px 0;
+}
