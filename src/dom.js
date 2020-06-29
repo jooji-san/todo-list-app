@@ -1,41 +1,40 @@
-import { projects, todos, save } from './functionality';
-import { formatDistanceToNowStrict, isToday, parseISO, isFuture, format } from 'date-fns';
-import { ka } from 'date-fns/locale';
+import {
+  formatDistanceToNowStrict,
+  isToday,
+  parseISO,
+  isFuture,
+  format,
+} from "date-fns";
+import { ka } from "date-fns/locale";
+import { projects, todos, save } from "./functionality";
 
-export { sidebar };
+const addDivModule = (() => {
+  const addDiv = document.querySelector(".add-div");
+  const titleInput = addDiv.querySelector("#title");
+  const dueDateDateInput = addDiv.querySelector("#due-date-date");
+  const dueDateTimeInput = addDiv.querySelector("#due-date-time");
+  const priorityInput = addDiv.querySelector("#priority-select");
+  const projectInput = addDiv.querySelector("#project-select");
 
-const addDiv = (function () {
-  const addDiv = document.querySelector('.add-div');
-  const titleInput = addDiv.querySelector('#title');
-  const dueDateDateInput = addDiv.querySelector('#due-date-date');
-  const dueDateTimeInput = addDiv.querySelector('#due-date-time');
-  const priorityInput = addDiv.querySelector('#priority-select');
-  const projectInput = addDiv.querySelector('#project-select');
+  function addProjectDropdownOptions() {
+    const dropdown = document.querySelector("#project-select");
+    Object.keys(projects.obj).forEach((project) => {
+      const option = document.createElement("option");
+      option.value = project;
+      option.textContent = project;
+      dropdown.appendChild(option);
+    });
+  }
+
+  function clearProjectDropdownOptions() {
+    const dropdown = document.querySelector("#project-select");
+    dropdown.innerHTML = "";
+  }
 
   function refreshProjectDropdownOptions() {
     clearProjectDropdownOptions();
     addProjectDropdownOptions();
   }
-
-  function addProjectDropdownOptions() {
-    const dropdown = document.querySelector('#project-select');
-    Object.keys(projects.obj).forEach((project) => {
-      const option = document.createElement('option');
-      option.value = project;
-      option.textContent = project;
-      dropdown.appendChild(option);
-    });
-  };
-
-  function clearProjectDropdownOptions() {
-    const dropdown = document.querySelector('#project-select');
-    dropdown.innerHTML = '';
-  }
-
-  (function addOkBtnEventListener() {
-    const okBtn = document.querySelector('.ok-btn');
-    okBtn.addEventListener('click', handleOkBtnClick);
-  })();
 
   function handleOkBtnClick() {
     addTodo();
@@ -43,9 +42,14 @@ const addDiv = (function () {
     content.refresh();
   }
 
+  (function addOkBtnEventListener() {
+    const okBtn = document.querySelector(".ok-btn");
+    okBtn.addEventListener("click", handleOkBtnClick);
+  })();
+
   (function addCancelBtnEventListener() {
-    const cancelBtn = document.querySelector('.cancel-btn');
-    cancelBtn.addEventListener('click', toggleAddDiv);
+    const cancelBtn = document.querySelector(".cancel-btn");
+    cancelBtn.addEventListener("click", toggleAddDiv);
   })();
 
   function addTodo() {
@@ -55,20 +59,20 @@ const addDiv = (function () {
     const priority = priorityInput.value;
     const project = projectInput.value;
 
-    todos.create(title, '', dueDateDate, dueDateTime, priority, project, false);
+    todos.create(title, "", dueDateDate, dueDateTime, priority, project, false);
   }
 
   function resetAddDivInputs() {
-    titleInput.value = '';
-    dueDateDateInput.value = format(Date.now(), 'yyyy-MM-dd');
-    dueDateTimeInput.value = format(Date.now(), 'k:m');
-    priorityInput.value = 'priority-none';
-    projectInput.value = 'inbox';
+    titleInput.value = "";
+    dueDateDateInput.value = format(Date.now(), "yyyy-MM-dd");
+    dueDateTimeInput.value = format(Date.now(), "k:m");
+    priorityInput.value = "priority-none";
+    projectInput.value = "inbox";
   }
 
   function toggleHidden() {
-    const addDiv = document.querySelector('.add-div');
-    addDiv.classList.toggle('hidden');
+    const addDiv = document.querySelector(".add-div");
+    addDiv.classList.toggle("hidden");
   }
 
   function toggleAddDiv() {
@@ -80,34 +84,37 @@ const addDiv = (function () {
   return { toggleAddDiv };
 })();
 
-const content = (function () {
+const content = (() => {
   (function addSortInputEventListeners() {
-    const topInputs = document.querySelectorAll('.top-input')
-    topInputs.forEach(input => input.addEventListener('input', refresh))
+    const topInputs = document.querySelectorAll(".top-input");
+    topInputs.forEach((input) => input.addEventListener("input", refresh));
   })();
 
   function getSortedValues(values) {
-    const propertyInput = document.querySelector('#sort-property');
-    const directionInput = document.querySelector('#sort-direction');
+    const propertyInput = document.querySelector("#sort-property");
+    const directionInput = document.querySelector("#sort-direction");
     const property = propertyInput.value;
     const direction = directionInput.value;
 
-    if (property === 'due date') {
-      if (direction === 'desc') {
+    if (property === "due date") {
+      if (direction === "desc") {
         return projects.sort.sortByDueDateDesc(values);
-      } else if (direction === 'asc') {
+      }
+      if (direction === "asc") {
         return projects.sort.sortByDueDateAsc(values);
       }
-    } else if (property === 'creation date') {
-      if (direction === 'desc') {
+    } else if (property === "creation date") {
+      if (direction === "desc") {
         return projects.sort.sortByCreationDateDesc(values);
-      } else if (direction === 'asc') {
+      }
+      if (direction === "asc") {
         return projects.sort.sortByCreationDateAsc(values);
       }
-    } else if (property === 'title') {
-      if (direction === 'desc') {
+    } else if (property === "title") {
+      if (direction === "desc") {
         return projects.sort.sortByTitleDesc(values);
-      } else if (direction === 'asc') {
+      }
+      if (direction === "asc") {
         return projects.sort.sortByTitleAsc(values);
       }
     }
@@ -125,19 +132,22 @@ const content = (function () {
 
   function moveCompletedToBottom(values) {
     const valuesCopy = [...values];
-    return valuesCopy.sort((a, b) => a.completed - b.completed)
+    return valuesCopy.sort((a, b) => a.completed - b.completed);
   }
 
   function hideCompleted(values) {
-    return values.filter(value => value.completed === false);
+    return values.filter((value) => value.completed === false);
   }
 
   function hideOrBottom(values) {
-    const hideCompletedCheckbox = document.querySelector('.hide-completed');
-    const completedToBottomCheckbox = document.querySelector('.completed-to-bottom');
+    const hideCompletedCheckbox = document.querySelector(".hide-completed");
+    const completedToBottomCheckbox = document.querySelector(
+      ".completed-to-bottom"
+    );
     if (hideCompletedCheckbox.checked) {
       return hideCompleted(values);
-    } else if (completedToBottomCheckbox.checked) {
+    }
+    if (completedToBottomCheckbox.checked) {
       return moveCompletedToBottom(values);
     }
 
@@ -149,9 +159,9 @@ const content = (function () {
 
     let valuesModified;
     const currProjectTitle = sidebar.getCurrentProject();
-    if (currProjectTitle === 'view all') {
+    if (currProjectTitle === "view all") {
       valuesModified = getSortedValuesAll();
-    } else if (currProjectTitle === 'today') {
+    } else if (currProjectTitle === "today") {
       valuesModified = projects.filterToday(getSortedValuesAll());
     } else {
       const currProjectValues = Object.values(projects.obj[currProjectTitle]);
@@ -162,24 +172,36 @@ const content = (function () {
 
     valuesModified.forEach((todo) => {
       renderContainer(todo.title, todo.projectTitle);
-      renderContainerContent(todo.title, todo.dueDateDate, todo.dueDateTime, todo.priority, todo.completed);
+      renderContainerContent(
+        todo.title,
+        todo.dueDateDate,
+        todo.dueDateTime,
+        todo.priority,
+        todo.completed
+      );
     });
 
     addContainerEventListeners();
   }
 
   function renderContainer(todoTitle, todoProjectTitle) {
-    const contentDiv = document.querySelector('.content');
+    const contentDiv = document.querySelector(".content");
 
-    const container = document.createElement('div');
-    container.classList.add('container');
+    const container = document.createElement("div");
+    container.classList.add("container");
     container.dataset.title = todoTitle;
     container.dataset.projectTitle = todoProjectTitle;
 
     contentDiv.appendChild(container);
   }
 
-  function renderContainerContent(todoTitle, todoDueDateDate, todoDueDateTime, todoPriority, todoCompleted) {
+  function renderContainerContent(
+    todoTitle,
+    todoDueDateDate,
+    todoDueDateTime,
+    todoPriority,
+    todoCompleted
+  ) {
     const container = document.querySelector(`[data-title="${todoTitle}"]`);
 
     container.classList.add(todoPriority);
@@ -191,12 +213,12 @@ const content = (function () {
   }
 
   function insertCompleteCheckbox(container, todoCompleted) {
-    const completeCheckbox = document.createElement('input');
-    completeCheckbox.type = 'checkbox';
+    const completeCheckbox = document.createElement("input");
+    completeCheckbox.type = "checkbox";
     completeCheckbox.checked = todoCompleted;
-    completeCheckbox.classList.add('complete-checkbox');
-    completeCheckbox.addEventListener('click', handleCompleteCheckboxClick);
-    completeCheckbox.addEventListener('mouseover', (e) => e.stopPropagation());
+    completeCheckbox.classList.add("complete-checkbox");
+    completeCheckbox.addEventListener("click", handleCompleteCheckboxClick);
+    completeCheckbox.addEventListener("mouseover", (e) => e.stopPropagation());
     container.appendChild(completeCheckbox);
   }
 
@@ -204,10 +226,10 @@ const content = (function () {
     e.stopPropagation();
 
     const todo = findTodoWithEvent(e);
-    todo.completed = todo.completed ? false : true;
+    todo.completed = !todo.completed;
 
     const container = e.target.parentElement;
-    container.classList.toggle('completed');
+    container.classList.toggle("completed");
 
     refresh();
   }
@@ -219,18 +241,20 @@ const content = (function () {
   }
 
   function insertTitle(container, todoTitle) {
-    const title = document.createElement('p');
-    title.classList.add('todo-title');
+    const title = document.createElement("p");
+    title.classList.add("todo-title");
     title.textContent = todoTitle;
     container.appendChild(title);
   }
 
   function insertDueDate(container, todoDueDateDate, todoDueDateTime) {
-    const dueDateElement = document.createElement('p');
+    const dueDateElement = document.createElement("p");
 
     const todoDueDateISO = parseISO(`${todoDueDateDate} ${todoDueDateTime}`);
     if (isToday(todoDueDateISO)) {
-      let todoDueDateFormatted = formatDistanceToNowStrict(todoDueDateISO, { locale: ka });
+      let todoDueDateFormatted = formatDistanceToNowStrict(todoDueDateISO, {
+        locale: ka,
+      });
       todoDueDateFormatted = todoDueDateFormatted.slice(0, -1);
 
       dueDateElement.textContent = isFuture(todoDueDateISO)
@@ -244,11 +268,11 @@ const content = (function () {
   }
 
   function insertDeleteBtn(container) {
-    const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add('delete-btn')
-    deleteBtn.textContent = 'delete';
-    deleteBtn.addEventListener('click', handleDeleteBtn);
-    deleteBtn.addEventListener('mouseover', (e) => e.stopPropagation());
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.textContent = "delete";
+    deleteBtn.addEventListener("click", handleDeleteBtn);
+    deleteBtn.addEventListener("mouseover", (e) => e.stopPropagation());
     container.appendChild(deleteBtn);
   }
 
@@ -270,11 +294,15 @@ const content = (function () {
   }
 
   function addContainerEventListeners() {
-    const containers = document.querySelectorAll('.container');
+    const containers = document.querySelectorAll(".container");
     containers.forEach((container) => {
-      container.addEventListener('click', handleContainerClick);
-      container.addEventListener('mouseover', (e) => e.currentTarget.classList.add('opacity-80'));
-      container.addEventListener('mouseout', (e) => e.currentTarget.classList.remove('opacity-80'));
+      container.addEventListener("click", handleContainerClick);
+      container.addEventListener("mouseover", (e) =>
+        e.currentTarget.classList.add("opacity-80")
+      );
+      container.addEventListener("mouseout", (e) =>
+        e.currentTarget.classList.remove("opacity-80")
+      );
     });
   }
 
@@ -286,15 +314,15 @@ const content = (function () {
   }
 
   function clear() {
-    const contentDiv = document.querySelector('.content');
-    contentDiv.innerHTML = '';
+    const contentDiv = document.querySelector(".content");
+    contentDiv.innerHTML = "";
   }
 
   return { render, clear, refresh };
 })();
 
 const sidebar = (function () {
-  let currentProject = 'view all';
+  let currentProject = "view all";
   function getCurrentProject() {
     return currentProject;
   }
@@ -304,9 +332,9 @@ const sidebar = (function () {
 
   function render() {
     Object.keys(projects.obj).forEach((key) => {
-      const projectLinksDiv = document.querySelector('.project-links');
-      const projectLink = document.createElement('a');
-      projectLink.classList.add('project-link');
+      const projectLinksDiv = document.querySelector(".project-links");
+      const projectLink = document.createElement("a");
+      projectLink.classList.add("project-link");
       projectLink.textContent = key;
       projectLinksDiv.appendChild(projectLink);
     });
@@ -315,8 +343,10 @@ const sidebar = (function () {
   }
 
   function addProjectEventListeners() {
-    const projectLinks = document.querySelectorAll('.sidebar a');
-    projectLinks.forEach((link) => link.addEventListener('click', handleProjectLinkClick));
+    const projectLinks = document.querySelectorAll(".sidebar a");
+    projectLinks.forEach((link) =>
+      link.addEventListener("click", handleProjectLinkClick)
+    );
   }
 
   function handleProjectLinkClick(e) {
@@ -329,21 +359,21 @@ const sidebar = (function () {
   }
 
   (function addEventListenerAddBtn() {
-    const addBtn = document.querySelector('.add-btn');
-    addBtn.addEventListener('click', handleAddBtnClick);
+    const addBtn = document.querySelector(".add-btn");
+    addBtn.addEventListener("click", handleAddBtnClick);
   })();
 
   function handleAddBtnClick() {
-    addDiv.toggleAddDiv();
+    addDivModule.toggleAddDiv();
   }
 
   (function addEventListenerAddProjectBtn() {
-    const addProjectBtn = document.querySelector('.add-project-btn');
-    addProjectBtn.addEventListener('click', handleAddProjectBtnClick);
+    const addProjectBtn = document.querySelector(".add-project-btn");
+    addProjectBtn.addEventListener("click", handleAddProjectBtnClick);
   })();
 
   function handleAddProjectBtnClick() {
-    const projectTitle = prompt('what do you want to name a new project?');
+    const projectTitle = prompt("what do you want to name a new project?");
     if (!projectTitle) return;
 
     projects.create(projectTitle);
@@ -353,8 +383,8 @@ const sidebar = (function () {
   }
 
   function clearProjectLinks() {
-    const projectLinksDiv = document.querySelector('.project-links');
-    const projectLinks = document.querySelectorAll('.project-link');
+    const projectLinksDiv = document.querySelector(".project-links");
+    const projectLinks = document.querySelectorAll(".project-link");
     projectLinks.forEach((link) => projectLinksDiv.removeChild(link));
   }
 
@@ -362,19 +392,19 @@ const sidebar = (function () {
 })();
 
 const expandedView = (function () {
-  const expandedDiv = document.querySelector('.expanded');
-  const titleHeader = expandedDiv.querySelector('.todo-title');
-  const descriptionTextarea = expandedDiv.querySelector('.todo-description');
-  const dueDateDateInput = expandedDiv.querySelector('.todo-due-date-date');
-  const dueDateTimeInput = expandedDiv.querySelector('.todo-due-date-time');
-  const priorityInput = expandedDiv.querySelector('.todo-priority-select');
-  const projectInput = expandedDiv.querySelector('.todo-project-select');
+  const expandedDiv = document.querySelector(".expanded");
+  const titleHeader = expandedDiv.querySelector(".todo-title");
+  const descriptionTextarea = expandedDiv.querySelector(".todo-description");
+  const dueDateDateInput = expandedDiv.querySelector(".todo-due-date-date");
+  const dueDateTimeInput = expandedDiv.querySelector(".todo-due-date-time");
+  const priorityInput = expandedDiv.querySelector(".todo-priority-select");
+  const projectInput = expandedDiv.querySelector(".todo-project-select");
 
   function toggleHidden() {
-    const fullDiv = document.querySelector('.full');
-    const expandedDiv = document.querySelector('.expanded');
-    fullDiv.classList.toggle('hidden');
-    expandedDiv.classList.toggle('hidden');
+    const fullDiv = document.querySelector(".full");
+    const expandedDiv = document.querySelector(".expanded");
+    fullDiv.classList.toggle("hidden");
+    expandedDiv.classList.toggle("hidden");
     content.refresh();
   }
 
@@ -395,19 +425,20 @@ const expandedView = (function () {
   }
 
   (function addInputEventListeners() {
-    const expandedDiv = document.querySelector('.expanded');
-    const inputs = expandedDiv.querySelectorAll('.input');
-    inputs.forEach(input => input.addEventListener('input', handleInputChange));
+    const inputs = expandedDiv.querySelectorAll(".input");
+    inputs.forEach((input) =>
+      input.addEventListener("input", handleInputChange)
+    );
   })();
 
   function handleInputChange(e) {
     const todoTitle = titleHeader.textContent;
     const input = e.currentTarget;
-    const property = input.dataset.property;
+    const { property } = input.dataset;
     const todo = projects.obj[currProjectTitle][todoTitle];
     todo[property] = input.value;
 
-    if (e.currentTarget.dataset.property === 'projectTitle') {
+    if (e.currentTarget.dataset.property === "projectTitle") {
       todo.moveTodo();
       delete projects.obj[currProjectTitle][todoTitle];
       currProjectTitle = input.value;
@@ -417,19 +448,14 @@ const expandedView = (function () {
   }
 
   (function AddExitBtnEventListener() {
-    const exitBtn = document.querySelector('.exit-btn');
-    exitBtn.addEventListener('click', toggleHidden);
+    const exitBtn = document.querySelector(".exit-btn");
+    exitBtn.addEventListener("click", toggleHidden);
   })();
 
-  function refreshProjectDropdownOptions() {
-    clearProjectDropdownOptions();
-    addProjectDropdownOptions();
-  }
-
   function addProjectDropdownOptions() {
-    const dropdown = document.querySelector('.todo-project-select');
+    const dropdown = document.querySelector(".todo-project-select");
     Object.keys(projects.obj).forEach((project) => {
-      const option = document.createElement('option');
+      const option = document.createElement("option");
       option.value = project;
       option.textContent = project;
       dropdown.appendChild(option);
@@ -437,13 +463,16 @@ const expandedView = (function () {
   }
 
   function clearProjectDropdownOptions() {
-    const dropdown = document.querySelector('.todo-project-select');
-    dropdown.innerHTML = '';
+    const dropdown = document.querySelector(".todo-project-select");
+    dropdown.innerHTML = "";
+  }
+
+  function refreshProjectDropdownOptions() {
+    clearProjectDropdownOptions();
+    addProjectDropdownOptions();
   }
 
   return { render };
 })();
 
-sidebar.render();
-
-content.render('view all');
+export { sidebar, content };

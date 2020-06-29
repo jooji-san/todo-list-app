@@ -1,8 +1,7 @@
-export { projects, todos, save };
-import { compareDesc, compareAsc, parseISO, isToday } from 'date-fns';
+import { compareDesc, compareAsc, parseISO, isToday } from "date-fns";
 
-const projects = (function () {
-  let obj = {};
+const projects = (() => {
+  const obj = {};
 
   function create(title) {
     if (Object.keys(this.obj).some((key) => key === title)) {
@@ -12,11 +11,13 @@ const projects = (function () {
   }
 
   function filterToday(arr) {
-    const arrFiltered = arr.filter(todo => isToday(parseISO(todo.dueDateDate)));
+    const arrFiltered = arr.filter((todo) =>
+      isToday(parseISO(todo.dueDateDate))
+    );
     return arrFiltered;
   }
 
-  const sort = (function () {
+  const sort = (() => {
     function sortByCreationDateDesc(arr) {
       arr.sort((a, b) => b.creationDate - a.creationDate);
       return arr;
@@ -38,15 +39,21 @@ const projects = (function () {
     }
 
     function sortByDueDateDesc(arr) {
-      arr.sort((a, b) => {
-        compareDesc(parseISO(`${a.dueDateDate} ${a.dueDateTime}`), parseISO(`${b.dueDateDate} ${b.dueDateTime}`));
-      });
+      arr.sort((a, b) =>
+        compareDesc(
+          parseISO(`${a.dueDateDate} ${a.dueDateTime}`),
+          parseISO(`${b.dueDateDate} ${b.dueDateTime}`)
+        )
+      );
       return arr;
     }
 
     function sortByDueDateAsc(arr) {
       arr.sort((a, b) =>
-        compareAsc(parseISO(`${a.dueDateDate} ${a.dueDateTime}`), parseISO(`${b.dueDateDate} ${b.dueDateTime}`)),
+        compareAsc(
+          parseISO(`${a.dueDateDate} ${a.dueDateTime}`),
+          parseISO(`${b.dueDateDate} ${b.dueDateTime}`)
+        )
       );
       return arr;
     }
@@ -61,12 +68,26 @@ const projects = (function () {
     };
   })();
 
-  return { obj, create, sort, filterToday };
+  return {
+    obj,
+    create,
+    sort,
+    filterToday,
+  };
 })();
 
-const todos = (function () {
+const todos = (() => {
   class Todo {
-    constructor(title, creationDate, description, dueDateDate, dueDateTime, priority, projectTitle, completed = false) {
+    constructor(
+      title,
+      creationDate,
+      description,
+      dueDateDate,
+      dueDateTime,
+      priority,
+      projectTitle,
+      completed = false
+    ) {
       this.title = title;
       this.creationDate = creationDate;
       this.description = description;
@@ -82,7 +103,15 @@ const todos = (function () {
     }
   }
 
-  function create(title, description, dueDateDate, dueDateTime, priority, projectTitle, completed) {
+  function create(
+    title,
+    description,
+    dueDateDate,
+    dueDateTime,
+    priority,
+    projectTitle,
+    completed
+  ) {
     const creationDate = Date.now();
     const todo = new Todo(
       title,
@@ -92,7 +121,7 @@ const todos = (function () {
       dueDateTime,
       priority,
       projectTitle,
-      completed,
+      completed
     );
     todo.moveTodo();
   }
@@ -100,36 +129,24 @@ const todos = (function () {
   return { create };
 })();
 
-const save = (function () {
+const save = (() => {
+  function get() {
+    projects.obj = JSON.parse(localStorage.getItem("projects"));
+  }
+
+  function set() {
+    localStorage.setItem("projects", JSON.stringify(projects.obj));
+  }
+
   function init() {
-    if (localStorage.getItem('projects')) {
+    if (localStorage.getItem("projects")) {
       get();
     } else {
       set();
     }
   }
 
-  function get() {
-    projects.obj = JSON.parse(localStorage.getItem('projects'));
-  }
-
-  function set() {
-    localStorage.setItem('projects', JSON.stringify(projects.obj));
-  }
-
   return { init, set };
 })();
 
-projects.create('inbox');
-projects.create('სწავლა');
-
-todos.create('გარეცხე თეფშები', 'მარტო თეფშები არა. ტაფაც დევს იქ და კიდევ ბევრი ჩანგალი', '2020-06-29', '16:00', 'priority-high', 'inbox');
-todos.create('გაფერთხე საბანი', '', '2020-06-29', '23:00', 'priority-middle', 'inbox');
-todos.create('ითამაშე ქვიშაში', 'მეგობრებთან ერთად', '2021-01-01', '21:00', 'priority-low', 'inbox');
-todos.create('დაიზეპირე ფიზიკის ფორმულები', 'hehehe', '2021-01-01', '20:00', 'priority-high', 'სწავლა');
-todos.create('აკენწლე ბურთი ასჯერ', 'hey hey', '2012-02-05', '15:00', 'priority-middle', 'სწავლა');
-todos.create('გააკეთე პრეზენტაცია გერმანულში ბითიესზე', 'hey hey', '2012-02-05', '11:00', 'priority-middle', 'სწავლა');
-
-// save.init();
-
-console.log(projects.obj);
+export { projects, todos, save };
