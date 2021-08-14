@@ -52637,53 +52637,47 @@ module.exports = function (list, options) {
 /*!********************!*\
   !*** ./src/dom.js ***!
   \********************/
-/*! exports provided: sidebar */
+/*! exports provided: sidebar, content */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sidebar", function() { return sidebar; });
-/* harmony import */ var _functionality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./functionality */ "./src/functionality.js");
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/index.js");
-/* harmony import */ var date_fns_locale__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! date-fns/locale */ "./node_modules/date-fns/esm/locale/index.js");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "content", function() { return content; });
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/index.js");
+/* harmony import */ var date_fns_locale__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! date-fns/locale */ "./node_modules/date-fns/esm/locale/index.js");
+/* harmony import */ var _functionality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./functionality */ "./src/functionality.js");
 
 
 
 
+const addDivModule = (() => {
+  const addDiv = document.querySelector(".add-div");
+  const titleInput = addDiv.querySelector("#title");
+  const dueDateDateInput = addDiv.querySelector("#due-date-date");
+  const dueDateTimeInput = addDiv.querySelector("#due-date-time");
+  const priorityInput = addDiv.querySelector("#priority-select");
+  const projectInput = addDiv.querySelector("#project-select");
 
+  function addProjectDropdownOptions() {
+    const dropdown = document.querySelector("#project-select");
+    Object.keys(_functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].obj).forEach((project) => {
+      const option = document.createElement("option");
+      option.value = project;
+      option.textContent = project;
+      dropdown.appendChild(option);
+    });
+  }
 
-const addDiv = (function () {
-  const addDiv = document.querySelector('.add-div');
-  const titleInput = addDiv.querySelector('#title');
-  const dueDateDateInput = addDiv.querySelector('#due-date-date');
-  const dueDateTimeInput = addDiv.querySelector('#due-date-time');
-  const priorityInput = addDiv.querySelector('#priority-select');
-  const projectInput = addDiv.querySelector('#project-select');
+  function clearProjectDropdownOptions() {
+    const dropdown = document.querySelector("#project-select");
+    dropdown.innerHTML = "";
+  }
 
   function refreshProjectDropdownOptions() {
     clearProjectDropdownOptions();
     addProjectDropdownOptions();
   }
-
-  function addProjectDropdownOptions() {
-    const dropdown = document.querySelector('#project-select');
-    Object.keys(_functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].obj).forEach((project) => {
-      const option = document.createElement('option');
-      option.value = project;
-      option.textContent = project;
-      dropdown.appendChild(option);
-    });
-  };
-
-  function clearProjectDropdownOptions() {
-    const dropdown = document.querySelector('#project-select');
-    dropdown.innerHTML = '';
-  }
-
-  (function addOkBtnEventListener() {
-    const okBtn = document.querySelector('.ok-btn');
-    okBtn.addEventListener('click', handleOkBtnClick);
-  })();
 
   function handleOkBtnClick() {
     addTodo();
@@ -52691,9 +52685,14 @@ const addDiv = (function () {
     content.refresh();
   }
 
+  (function addOkBtnEventListener() {
+    const okBtn = document.querySelector(".ok-btn");
+    okBtn.addEventListener("click", handleOkBtnClick);
+  })();
+
   (function addCancelBtnEventListener() {
-    const cancelBtn = document.querySelector('.cancel-btn');
-    cancelBtn.addEventListener('click', toggleAddDiv);
+    const cancelBtn = document.querySelector(".cancel-btn");
+    cancelBtn.addEventListener("click", toggleAddDiv);
   })();
 
   function addTodo() {
@@ -52703,20 +52702,20 @@ const addDiv = (function () {
     const priority = priorityInput.value;
     const project = projectInput.value;
 
-    _functionality__WEBPACK_IMPORTED_MODULE_0__["todos"].create(title, '', dueDateDate, dueDateTime, priority, project, false);
+    _functionality__WEBPACK_IMPORTED_MODULE_2__["todos"].create(title, "", dueDateDate, dueDateTime, priority, project, false);
   }
 
   function resetAddDivInputs() {
-    titleInput.value = '';
-    dueDateDateInput.value = Object(date_fns__WEBPACK_IMPORTED_MODULE_1__["format"])(Date.now(), 'yyyy-MM-dd');
-    dueDateTimeInput.value = Object(date_fns__WEBPACK_IMPORTED_MODULE_1__["format"])(Date.now(), 'k:m');
-    priorityInput.value = 'priority-none';
-    projectInput.value = 'inbox';
+    titleInput.value = "";
+    dueDateDateInput.value = Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["format"])(Date.now(), "yyyy-MM-dd");
+    dueDateTimeInput.value = Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["format"])(Date.now(), "k:m");
+    priorityInput.value = "priority-none";
+    projectInput.value = "inbox";
   }
 
   function toggleHidden() {
-    const addDiv = document.querySelector('.add-div');
-    addDiv.classList.toggle('hidden');
+    const addDiv = document.querySelector(".add-div");
+    addDiv.classList.toggle("hidden");
   }
 
   function toggleAddDiv() {
@@ -52728,42 +52727,45 @@ const addDiv = (function () {
   return { toggleAddDiv };
 })();
 
-const content = (function () {
+const content = (() => {
   (function addSortInputEventListeners() {
-    const topInputs = document.querySelectorAll('.top-input')
-    topInputs.forEach(input => input.addEventListener('input', refresh))
+    const topInputs = document.querySelectorAll(".top-input");
+    topInputs.forEach((input) => input.addEventListener("input", refresh));
   })();
 
   function getSortedValues(values) {
-    const propertyInput = document.querySelector('#sort-property');
-    const directionInput = document.querySelector('#sort-direction');
+    const propertyInput = document.querySelector("#sort-property");
+    const directionInput = document.querySelector("#sort-direction");
     const property = propertyInput.value;
     const direction = directionInput.value;
 
-    if (property === 'due date') {
-      if (direction === 'desc') {
-        return _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].sort.sortByDueDateDesc(values);
-      } else if (direction === 'asc') {
-        return _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].sort.sortByDueDateAsc(values);
+    if (property === "due date") {
+      if (direction === "desc") {
+        return _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].sort.sortByDueDateDesc(values);
       }
-    } else if (property === 'creation date') {
-      if (direction === 'desc') {
-        return _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].sort.sortByCreationDateDesc(values);
-      } else if (direction === 'asc') {
-        return _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].sort.sortByCreationDateAsc(values);
+      if (direction === "asc") {
+        return _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].sort.sortByDueDateAsc(values);
       }
-    } else if (property === 'title') {
-      if (direction === 'desc') {
-        return _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].sort.sortByTitleDesc(values);
-      } else if (direction === 'asc') {
-        return _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].sort.sortByTitleAsc(values);
+    } else if (property === "creation date") {
+      if (direction === "desc") {
+        return _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].sort.sortByCreationDateDesc(values);
+      }
+      if (direction === "asc") {
+        return _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].sort.sortByCreationDateAsc(values);
+      }
+    } else if (property === "title") {
+      if (direction === "desc") {
+        return _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].sort.sortByTitleDesc(values);
+      }
+      if (direction === "asc") {
+        return _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].sort.sortByTitleAsc(values);
       }
     }
   }
 
   function getSortedValuesAll() {
     // this needs some rewriting
-    const values1 = Object.values(_functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].obj);
+    const values1 = Object.values(_functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].obj);
     let values2 = values1.map((obj) => Object.values(obj));
     values2 = values2.flat();
 
@@ -52773,19 +52775,22 @@ const content = (function () {
 
   function moveCompletedToBottom(values) {
     const valuesCopy = [...values];
-    return valuesCopy.sort((a, b) => a.completed - b.completed)
+    return valuesCopy.sort((a, b) => a.completed - b.completed);
   }
 
   function hideCompleted(values) {
-    return values.filter(value => value.completed === false);
+    return values.filter((value) => value.completed === false);
   }
 
   function hideOrBottom(values) {
-    const hideCompletedCheckbox = document.querySelector('.hide-completed');
-    const completedToBottomCheckbox = document.querySelector('.completed-to-bottom');
+    const hideCompletedCheckbox = document.querySelector(".hide-completed");
+    const completedToBottomCheckbox = document.querySelector(
+      ".completed-to-bottom"
+    );
     if (hideCompletedCheckbox.checked) {
       return hideCompleted(values);
-    } else if (completedToBottomCheckbox.checked) {
+    }
+    if (completedToBottomCheckbox.checked) {
       return moveCompletedToBottom(values);
     }
 
@@ -52793,16 +52798,16 @@ const content = (function () {
   }
 
   function render() {
-    _functionality__WEBPACK_IMPORTED_MODULE_0__["save"].set();
+    _functionality__WEBPACK_IMPORTED_MODULE_2__["save"].set();
 
     let valuesModified;
     const currProjectTitle = sidebar.getCurrentProject();
-    if (currProjectTitle === 'view all') {
+    if (currProjectTitle === "view all") {
       valuesModified = getSortedValuesAll();
-    } else if (currProjectTitle === 'today') {
-      valuesModified = _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].filterToday(getSortedValuesAll());
+    } else if (currProjectTitle === "today") {
+      valuesModified = _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].filterToday(getSortedValuesAll());
     } else {
-      const currProjectValues = Object.values(_functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].obj[currProjectTitle]);
+      const currProjectValues = Object.values(_functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].obj[currProjectTitle]);
       valuesModified = getSortedValues(currProjectValues);
     }
 
@@ -52810,24 +52815,36 @@ const content = (function () {
 
     valuesModified.forEach((todo) => {
       renderContainer(todo.title, todo.projectTitle);
-      renderContainerContent(todo.title, todo.dueDateDate, todo.dueDateTime, todo.priority, todo.completed);
+      renderContainerContent(
+        todo.title,
+        todo.dueDateDate,
+        todo.dueDateTime,
+        todo.priority,
+        todo.completed
+      );
     });
 
     addContainerEventListeners();
   }
 
   function renderContainer(todoTitle, todoProjectTitle) {
-    const contentDiv = document.querySelector('.content');
+    const contentDiv = document.querySelector(".content");
 
-    const container = document.createElement('div');
-    container.classList.add('container');
+    const container = document.createElement("div");
+    container.classList.add("container");
     container.dataset.title = todoTitle;
     container.dataset.projectTitle = todoProjectTitle;
 
     contentDiv.appendChild(container);
   }
 
-  function renderContainerContent(todoTitle, todoDueDateDate, todoDueDateTime, todoPriority, todoCompleted) {
+  function renderContainerContent(
+    todoTitle,
+    todoDueDateDate,
+    todoDueDateTime,
+    todoPriority,
+    todoCompleted
+  ) {
     const container = document.querySelector(`[data-title="${todoTitle}"]`);
 
     container.classList.add(todoPriority);
@@ -52839,12 +52856,12 @@ const content = (function () {
   }
 
   function insertCompleteCheckbox(container, todoCompleted) {
-    const completeCheckbox = document.createElement('input');
-    completeCheckbox.type = 'checkbox';
+    const completeCheckbox = document.createElement("input");
+    completeCheckbox.type = "checkbox";
     completeCheckbox.checked = todoCompleted;
-    completeCheckbox.classList.add('complete-checkbox');
-    completeCheckbox.addEventListener('click', handleCompleteCheckboxClick);
-    completeCheckbox.addEventListener('mouseover', (e) => e.stopPropagation());
+    completeCheckbox.classList.add("complete-checkbox");
+    completeCheckbox.addEventListener("click", handleCompleteCheckboxClick);
+    completeCheckbox.addEventListener("mouseover", (e) => e.stopPropagation());
     container.appendChild(completeCheckbox);
   }
 
@@ -52852,10 +52869,10 @@ const content = (function () {
     e.stopPropagation();
 
     const todo = findTodoWithEvent(e);
-    todo.completed = todo.completed ? false : true;
+    todo.completed = !todo.completed;
 
     const container = e.target.parentElement;
-    container.classList.toggle('completed');
+    container.classList.toggle("completed");
 
     refresh();
   }
@@ -52863,25 +52880,27 @@ const content = (function () {
   function findTodoWithEvent(e) {
     const todoTitle = e.target.parentElement.dataset.title;
     const todoProjectTitle = e.target.parentElement.dataset.projectTitle;
-    return _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].obj[todoProjectTitle][todoTitle];
+    return _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].obj[todoProjectTitle][todoTitle];
   }
 
   function insertTitle(container, todoTitle) {
-    const title = document.createElement('p');
-    title.classList.add('todo-title');
+    const title = document.createElement("p");
+    title.classList.add("todo-title");
     title.textContent = todoTitle;
     container.appendChild(title);
   }
 
   function insertDueDate(container, todoDueDateDate, todoDueDateTime) {
-    const dueDateElement = document.createElement('p');
+    const dueDateElement = document.createElement("p");
 
-    const todoDueDateISO = Object(date_fns__WEBPACK_IMPORTED_MODULE_1__["parseISO"])(`${todoDueDateDate} ${todoDueDateTime}`);
-    if (Object(date_fns__WEBPACK_IMPORTED_MODULE_1__["isToday"])(todoDueDateISO)) {
-      let todoDueDateFormatted = Object(date_fns__WEBPACK_IMPORTED_MODULE_1__["formatDistanceToNowStrict"])(todoDueDateISO, { locale: date_fns_locale__WEBPACK_IMPORTED_MODULE_2__["ka"] });
+    const todoDueDateISO = Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(`${todoDueDateDate} ${todoDueDateTime}`);
+    if (Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["isToday"])(todoDueDateISO)) {
+      let todoDueDateFormatted = Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["formatDistanceToNowStrict"])(todoDueDateISO, {
+        locale: date_fns_locale__WEBPACK_IMPORTED_MODULE_1__["ka"],
+      });
       todoDueDateFormatted = todoDueDateFormatted.slice(0, -1);
 
-      dueDateElement.textContent = Object(date_fns__WEBPACK_IMPORTED_MODULE_1__["isFuture"])(todoDueDateISO)
+      dueDateElement.textContent = Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["isFuture"])(todoDueDateISO)
         ? `${todoDueDateFormatted}ში`
         : `${todoDueDateFormatted}ის წინ`;
     } else {
@@ -52892,11 +52911,11 @@ const content = (function () {
   }
 
   function insertDeleteBtn(container) {
-    const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add('delete-btn')
-    deleteBtn.textContent = 'delete';
-    deleteBtn.addEventListener('click', handleDeleteBtn);
-    deleteBtn.addEventListener('mouseover', (e) => e.stopPropagation());
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.textContent = "delete";
+    deleteBtn.addEventListener("click", handleDeleteBtn);
+    deleteBtn.addEventListener("mouseover", (e) => e.stopPropagation());
     container.appendChild(deleteBtn);
   }
 
@@ -52909,7 +52928,7 @@ const content = (function () {
   function deleteTodo(e) {
     const todoTitle = e.target.parentElement.dataset.title;
     const todoProjectTitle = e.target.parentElement.dataset.projectTitle;
-    delete _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].obj[todoProjectTitle][todoTitle];
+    delete _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].obj[todoProjectTitle][todoTitle];
   }
 
   function refresh() {
@@ -52918,31 +52937,35 @@ const content = (function () {
   }
 
   function addContainerEventListeners() {
-    const containers = document.querySelectorAll('.container');
+    const containers = document.querySelectorAll(".container");
     containers.forEach((container) => {
-      container.addEventListener('click', handleContainerClick);
-      container.addEventListener('mouseover', (e) => e.currentTarget.classList.add('opacity-80'));
-      container.addEventListener('mouseout', (e) => e.currentTarget.classList.remove('opacity-80'));
+      container.addEventListener("click", handleContainerClick);
+      container.addEventListener("mouseover", (e) =>
+        e.currentTarget.classList.add("opacity-80")
+      );
+      container.addEventListener("mouseout", (e) =>
+        e.currentTarget.classList.remove("opacity-80")
+      );
     });
   }
 
   function handleContainerClick(e) {
     const todoTitle = e.currentTarget.dataset.title;
     const todoProjectTitle = e.currentTarget.dataset.projectTitle;
-    const todo = _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].obj[todoProjectTitle][todoTitle];
+    const todo = _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].obj[todoProjectTitle][todoTitle];
     expandedView.render(todo);
   }
 
   function clear() {
-    const contentDiv = document.querySelector('.content');
-    contentDiv.innerHTML = '';
+    const contentDiv = document.querySelector(".content");
+    contentDiv.innerHTML = "";
   }
 
   return { render, clear, refresh };
 })();
 
 const sidebar = (function () {
-  let currentProject = 'view all';
+  let currentProject = "view all";
   function getCurrentProject() {
     return currentProject;
   }
@@ -52951,10 +52974,10 @@ const sidebar = (function () {
   }
 
   function render() {
-    Object.keys(_functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].obj).forEach((key) => {
-      const projectLinksDiv = document.querySelector('.project-links');
-      const projectLink = document.createElement('a');
-      projectLink.classList.add('project-link');
+    Object.keys(_functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].obj).forEach((key) => {
+      const projectLinksDiv = document.querySelector(".project-links");
+      const projectLink = document.createElement("a");
+      projectLink.classList.add("project-link");
       projectLink.textContent = key;
       projectLinksDiv.appendChild(projectLink);
     });
@@ -52963,8 +52986,10 @@ const sidebar = (function () {
   }
 
   function addProjectEventListeners() {
-    const projectLinks = document.querySelectorAll('.sidebar a');
-    projectLinks.forEach((link) => link.addEventListener('click', handleProjectLinkClick));
+    const projectLinks = document.querySelectorAll(".sidebar a");
+    projectLinks.forEach((link) =>
+      link.addEventListener("click", handleProjectLinkClick)
+    );
   }
 
   function handleProjectLinkClick(e) {
@@ -52977,32 +53002,32 @@ const sidebar = (function () {
   }
 
   (function addEventListenerAddBtn() {
-    const addBtn = document.querySelector('.add-btn');
-    addBtn.addEventListener('click', handleAddBtnClick);
+    const addBtn = document.querySelector(".add-btn");
+    addBtn.addEventListener("click", handleAddBtnClick);
   })();
 
   function handleAddBtnClick() {
-    addDiv.toggleAddDiv();
+    addDivModule.toggleAddDiv();
   }
 
   (function addEventListenerAddProjectBtn() {
-    const addProjectBtn = document.querySelector('.add-project-btn');
-    addProjectBtn.addEventListener('click', handleAddProjectBtnClick);
+    const addProjectBtn = document.querySelector(".add-project-btn");
+    addProjectBtn.addEventListener("click", handleAddProjectBtnClick);
   })();
 
   function handleAddProjectBtnClick() {
-    const projectTitle = prompt('what do you want to name a new project?');
+    const projectTitle = prompt("what do you want to name a new project?");
     if (!projectTitle) return;
 
-    _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].create(projectTitle);
+    _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].create(projectTitle);
     clearProjectLinks();
     render();
-    _functionality__WEBPACK_IMPORTED_MODULE_0__["save"].set();
+    _functionality__WEBPACK_IMPORTED_MODULE_2__["save"].set();
   }
 
   function clearProjectLinks() {
-    const projectLinksDiv = document.querySelector('.project-links');
-    const projectLinks = document.querySelectorAll('.project-link');
+    const projectLinksDiv = document.querySelector(".project-links");
+    const projectLinks = document.querySelectorAll(".project-link");
     projectLinks.forEach((link) => projectLinksDiv.removeChild(link));
   }
 
@@ -53010,19 +53035,19 @@ const sidebar = (function () {
 })();
 
 const expandedView = (function () {
-  const expandedDiv = document.querySelector('.expanded');
-  const titleHeader = expandedDiv.querySelector('.todo-title');
-  const descriptionTextarea = expandedDiv.querySelector('.todo-description');
-  const dueDateDateInput = expandedDiv.querySelector('.todo-due-date-date');
-  const dueDateTimeInput = expandedDiv.querySelector('.todo-due-date-time');
-  const priorityInput = expandedDiv.querySelector('.todo-priority-select');
-  const projectInput = expandedDiv.querySelector('.todo-project-select');
+  const expandedDiv = document.querySelector(".expanded");
+  const titleHeader = expandedDiv.querySelector(".todo-title");
+  const descriptionTextarea = expandedDiv.querySelector(".todo-description");
+  const dueDateDateInput = expandedDiv.querySelector(".todo-due-date-date");
+  const dueDateTimeInput = expandedDiv.querySelector(".todo-due-date-time");
+  const priorityInput = expandedDiv.querySelector(".todo-priority-select");
+  const projectInput = expandedDiv.querySelector(".todo-project-select");
 
   function toggleHidden() {
-    const fullDiv = document.querySelector('.full');
-    const expandedDiv = document.querySelector('.expanded');
-    fullDiv.classList.toggle('hidden');
-    expandedDiv.classList.toggle('hidden');
+    const fullDiv = document.querySelector(".full");
+    const expandedDiv = document.querySelector(".expanded");
+    fullDiv.classList.toggle("hidden");
+    expandedDiv.classList.toggle("hidden");
     content.refresh();
   }
 
@@ -53043,41 +53068,37 @@ const expandedView = (function () {
   }
 
   (function addInputEventListeners() {
-    const expandedDiv = document.querySelector('.expanded');
-    const inputs = expandedDiv.querySelectorAll('.input');
-    inputs.forEach(input => input.addEventListener('input', handleInputChange));
+    const inputs = expandedDiv.querySelectorAll(".input");
+    inputs.forEach((input) =>
+      input.addEventListener("input", handleInputChange)
+    );
   })();
 
   function handleInputChange(e) {
     const todoTitle = titleHeader.textContent;
     const input = e.currentTarget;
-    const property = input.dataset.property;
-    const todo = _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].obj[currProjectTitle][todoTitle];
+    const { property } = input.dataset;
+    const todo = _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].obj[currProjectTitle][todoTitle];
     todo[property] = input.value;
 
-    if (e.currentTarget.dataset.property === 'projectTitle') {
+    if (e.currentTarget.dataset.property === "projectTitle") {
       todo.moveTodo();
-      delete _functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].obj[currProjectTitle][todoTitle];
+      delete _functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].obj[currProjectTitle][todoTitle];
       currProjectTitle = input.value;
     }
 
-    _functionality__WEBPACK_IMPORTED_MODULE_0__["save"].set();
+    _functionality__WEBPACK_IMPORTED_MODULE_2__["save"].set();
   }
 
   (function AddExitBtnEventListener() {
-    const exitBtn = document.querySelector('.exit-btn');
-    exitBtn.addEventListener('click', toggleHidden);
+    const exitBtn = document.querySelector(".exit-btn");
+    exitBtn.addEventListener("click", toggleHidden);
   })();
 
-  function refreshProjectDropdownOptions() {
-    clearProjectDropdownOptions();
-    addProjectDropdownOptions();
-  }
-
   function addProjectDropdownOptions() {
-    const dropdown = document.querySelector('.todo-project-select');
-    Object.keys(_functionality__WEBPACK_IMPORTED_MODULE_0__["projects"].obj).forEach((project) => {
-      const option = document.createElement('option');
+    const dropdown = document.querySelector(".todo-project-select");
+    Object.keys(_functionality__WEBPACK_IMPORTED_MODULE_2__["projects"].obj).forEach((project) => {
+      const option = document.createElement("option");
       option.value = project;
       option.textContent = project;
       dropdown.appendChild(option);
@@ -53085,16 +53106,19 @@ const expandedView = (function () {
   }
 
   function clearProjectDropdownOptions() {
-    const dropdown = document.querySelector('.todo-project-select');
-    dropdown.innerHTML = '';
+    const dropdown = document.querySelector(".todo-project-select");
+    dropdown.innerHTML = "";
+  }
+
+  function refreshProjectDropdownOptions() {
+    clearProjectDropdownOptions();
+    addProjectDropdownOptions();
   }
 
   return { render };
 })();
 
-sidebar.render();
 
-content.render('view all');
 
 
 /***/ }),
@@ -53114,9 +53138,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/index.js");
 
 
-
-const projects = (function () {
-  let obj = {};
+const projects = (() => {
+  const obj = {};
 
   function create(title) {
     if (Object.keys(this.obj).some((key) => key === title)) {
@@ -53126,11 +53149,13 @@ const projects = (function () {
   }
 
   function filterToday(arr) {
-    const arrFiltered = arr.filter(todo => Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["isToday"])(Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(todo.dueDateDate)));
+    const arrFiltered = arr.filter((todo) =>
+      Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["isToday"])(Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(todo.dueDateDate))
+    );
     return arrFiltered;
   }
 
-  const sort = (function () {
+  const sort = (() => {
     function sortByCreationDateDesc(arr) {
       arr.sort((a, b) => b.creationDate - a.creationDate);
       return arr;
@@ -53152,15 +53177,21 @@ const projects = (function () {
     }
 
     function sortByDueDateDesc(arr) {
-      arr.sort((a, b) => {
-        Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["compareDesc"])(Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(`${a.dueDateDate} ${a.dueDateTime}`), Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(`${b.dueDateDate} ${b.dueDateTime}`));
-      });
+      arr.sort((a, b) =>
+        Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["compareDesc"])(
+          Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(`${a.dueDateDate} ${a.dueDateTime}`),
+          Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(`${b.dueDateDate} ${b.dueDateTime}`)
+        )
+      );
       return arr;
     }
 
     function sortByDueDateAsc(arr) {
       arr.sort((a, b) =>
-        Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["compareAsc"])(Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(`${a.dueDateDate} ${a.dueDateTime}`), Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(`${b.dueDateDate} ${b.dueDateTime}`)),
+        Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["compareAsc"])(
+          Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(`${a.dueDateDate} ${a.dueDateTime}`),
+          Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["parseISO"])(`${b.dueDateDate} ${b.dueDateTime}`)
+        )
       );
       return arr;
     }
@@ -53175,12 +53206,26 @@ const projects = (function () {
     };
   })();
 
-  return { obj, create, sort, filterToday };
+  return {
+    obj,
+    create,
+    sort,
+    filterToday,
+  };
 })();
 
-const todos = (function () {
+const todos = (() => {
   class Todo {
-    constructor(title, creationDate, description, dueDateDate, dueDateTime, priority, projectTitle, completed = false) {
+    constructor(
+      title,
+      creationDate,
+      description,
+      dueDateDate,
+      dueDateTime,
+      priority,
+      projectTitle,
+      completed = false
+    ) {
       this.title = title;
       this.creationDate = creationDate;
       this.description = description;
@@ -53196,7 +53241,15 @@ const todos = (function () {
     }
   }
 
-  function create(title, description, dueDateDate, dueDateTime, priority, projectTitle, completed) {
+  function create(
+    title,
+    description,
+    dueDateDate,
+    dueDateTime,
+    priority,
+    projectTitle,
+    completed
+  ) {
     const creationDate = Date.now();
     const todo = new Todo(
       title,
@@ -53206,7 +53259,7 @@ const todos = (function () {
       dueDateTime,
       priority,
       projectTitle,
-      completed,
+      completed
     );
     todo.moveTodo();
   }
@@ -53214,39 +53267,27 @@ const todos = (function () {
   return { create };
 })();
 
-const save = (function () {
+const save = (() => {
+  function get() {
+    projects.obj = JSON.parse(localStorage.getItem("projects"));
+  }
+
+  function set() {
+    localStorage.setItem("projects", JSON.stringify(projects.obj));
+  }
+
   function init() {
-    if (localStorage.getItem('projects')) {
+    if (localStorage.getItem("projects")) {
       get();
     } else {
       set();
     }
   }
 
-  function get() {
-    projects.obj = JSON.parse(localStorage.getItem('projects'));
-  }
-
-  function set() {
-    localStorage.setItem('projects', JSON.stringify(projects.obj));
-  }
-
   return { init, set };
 })();
 
-projects.create('inbox');
-projects.create('სწავლა');
 
-todos.create('გარეცხე თეფშები', 'მარტო თეფშები არა. ტაფაც დევს იქ და კიდევ ბევრი ჩანგალი', '2020-06-29', '16:00', 'priority-high', 'inbox');
-todos.create('გაფერთხე საბანი', '', '2020-06-29', '23:00', 'priority-middle', 'inbox');
-todos.create('ითამაშე ქვიშაში', 'მეგობრებთან ერთად', '2021-01-01', '21:00', 'priority-low', 'inbox');
-todos.create('დაიზეპირე ფიზიკის ფორმულები', 'hehehe', '2021-01-01', '20:00', 'priority-high', 'სწავლა');
-todos.create('აკენწლე ბურთი ასჯერ', 'hey hey', '2012-02-05', '15:00', 'priority-middle', 'სწავლა');
-todos.create('გააკეთე პრეზენტაცია გერმანულში ბითიესზე', 'hey hey', '2012-02-05', '11:00', 'priority-middle', 'სწავლა');
-
-// save.init();
-
-console.log(projects.obj);
 
 
 /***/ }),
@@ -53262,11 +53303,69 @@ console.log(projects.obj);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var normalize_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! normalize.css */ "./node_modules/normalize.css/normalize.css");
 /* harmony import */ var normalize_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(normalize_css__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _functionality_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./functionality.js */ "./src/functionality.js");
-/* harmony import */ var _dom_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dom.js */ "./src/dom.js");
+/* harmony import */ var _functionality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./functionality */ "./src/functionality.js");
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dom */ "./src/dom.js");
 
 
 
+
+_functionality__WEBPACK_IMPORTED_MODULE_1__["projects"].create("inbox");
+_functionality__WEBPACK_IMPORTED_MODULE_1__["projects"].create("study");
+
+_functionality__WEBPACK_IMPORTED_MODULE_1__["todos"].create(
+  "wash the plates",
+  "not only the plates, there also a dirty pot",
+  "2020-06-29",
+  "16:00",
+  "priority-high",
+  "inbox"
+);
+_functionality__WEBPACK_IMPORTED_MODULE_1__["todos"].create(
+  "do laundries",
+  "",
+  "2020-06-29",
+  "23:00",
+  "priority-middle",
+  "inbox"
+);
+_functionality__WEBPACK_IMPORTED_MODULE_1__["todos"].create(
+  "play in the sand",
+  "along with friends",
+  "2021-01-01",
+  "21:00",
+  "priority-low",
+  "inbox"
+);
+_functionality__WEBPACK_IMPORTED_MODULE_1__["todos"].create(
+  "learn physics formulas by heart",
+  "hehehe",
+  "2021-01-01",
+  "20:00",
+  "priority-high",
+  "study"
+);
+_functionality__WEBPACK_IMPORTED_MODULE_1__["todos"].create(
+  "build a new pc",
+  "when the shortages will stop",
+  "2012-02-05",
+  "15:00",
+  "priority-middle",
+  "study"
+);
+_functionality__WEBPACK_IMPORTED_MODULE_1__["todos"].create(
+  "do a presentation about BTS",
+  "for my German lessons",
+  "2012-02-05",
+  "11:00",
+  "priority-middle",
+  "study"
+);
+
+// save.init();
+
+_dom__WEBPACK_IMPORTED_MODULE_2__["sidebar"].render();
+
+_dom__WEBPACK_IMPORTED_MODULE_2__["content"].render("view all");
 
 
 /***/ })
