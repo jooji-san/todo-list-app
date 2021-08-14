@@ -3,18 +3,18 @@ import { projects, todos } from "./functionality";
 import { sidebar, content } from "./dom";
 
 projects.create("inbox");
-projects.create("სწავლა");
+projects.create("study");
 
 todos.create(
-  "გარეცხე თეფშები",
-  "მარტო თეფშები არა. ტაფაც დევს იქ და კიდევ ბევრი ჩანგალი",
+  "wash the plates",
+  "not only the plates, there also a dirty pot",
   "2020-06-29",
   "16:00",
   "priority-high",
   "inbox"
 );
 todos.create(
-  "გაფერთხე საბანი",
+  "do laundries",
   "",
   "2020-06-29",
   "23:00",
@@ -22,36 +22,36 @@ todos.create(
   "inbox"
 );
 todos.create(
-  "ითამაშე ქვიშაში",
-  "მეგობრებთან ერთად",
+  "play in the sand",
+  "along with friends",
   "2021-01-01",
   "21:00",
   "priority-low",
   "inbox"
 );
 todos.create(
-  "დაიზეპირე ფიზიკის ფორმულები",
+  "learn physics formulas by heart",
   "hehehe",
   "2021-01-01",
   "20:00",
   "priority-high",
-  "სწავლა"
+  "study"
 );
 todos.create(
-  "აკენწლე ბურთი ასჯერ",
-  "hey hey",
+  "build a new pc",
+  "when the shortages will stop",
   "2012-02-05",
   "15:00",
   "priority-middle",
-  "სწავლა"
+  "study"
 );
 todos.create(
-  "გააკეთე პრეზენტაცია გერმანულში ბითიესზე",
-  "hey hey",
+  "do a presentation about BTS",
+  "for my German lessons",
   "2012-02-05",
   "11:00",
   "priority-middle",
-  "სწავლა"
+  "study"
 );
 
 // save.init();
